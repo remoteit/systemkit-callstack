@@ -22,12 +22,12 @@ func (thisRef Frame) String() string {
 }
 
 // Get - Gets the call stack with no frames skipped
-func GetCurrent() (packageName string, stackFrames []Frame) {
-	return GetCurrentSkipFrames(0)
+func Get() (packageName string, stackFrames []Frame) {
+	return GetSkipFrames(0)
 }
 
 // GetSkipFrames - Gets the call stack with N skipped farames
-func GetCurrentSkipFrames(skip int) (packageName string, stackFrames []Frame) {
+func GetSkipFrames(skip int) (packageName string, stackFrames []Frame) {
 	var callStack [callStackDepth]uintptr
 	callStackSize := runtime.Callers(skip, callStack[:])
 	return getFromExistingCallers(callStack[:callStackSize])
