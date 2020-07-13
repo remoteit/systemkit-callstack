@@ -6,8 +6,6 @@ import (
 	"strings"
 )
 
-const callStackDepth = 50 // most relevant context seem to appear near the top of the stack
-
 // Frame -
 type Frame struct {
 	File string `json:"file"`
@@ -21,21 +19,27 @@ func (thisRef Frame) String() string {
 	return string(data)
 }
 
-// Get - Gets the call stack with no frames skipped
-func Get() (packageName string, stackFrames []Frame) {
-	return GetSkipFrames(0)
+// GetFrames - Gets the call stack with no frames skipped
+func GetFrames() []Frame {
+	return GetFramesWithSkip(0)
 }
 
-// GetSkipFrames - Gets the call stack with N skipped farames
-func GetSkipFrames(skip int) (packageName string, stackFrames []Frame) {
-	var callStack [callStackDepth]uintptr
-	callStackSize := runtime.Callers(skip, callStack[:])
-	return getFromExistingCallers(callStack[:callStackSize])
+// GetFramesWithSkip - Gets the call stack with N skipped frames
+func GetFramesWithSkip(skip int) []Frame {
+	return GetFramesFromRawFrames(GetRawFrames(skip))
 }
 
-func getFromExistingCallers(callStack []uintptr) (packageName string, stackFrames []Frame) {
-	packageName = ""
-	stackFrames = []Frame{}
+// GetRawFrames -
+func GetRawFrames(skip int) []uintptr {
+	const callStackDepth = 50 // most relevant context seem to appear near the top of the stack
+	var callStackBuffer = make([]uintptr, callStackDepth)
+	callStackSize := runtime.Callers(skip, callStackBuffer)
+	return callStackBuffer[:callStackSize]
+}
+
+// GetFramesFromRawFrames -
+func GetFramesFromRawFrames(callStack []uintptr) []Frame {
+	frames := []Frame{}
 
 	callStackFrames := runtime.CallersFrames(callStack)
 	for {
@@ -45,23 +49,19 @@ func getFromExistingCallers(callStack []uintptr) (packageName string, stackFrame
 		}
 
 		pkg, fn := splitPackageFuncName(frame.Function)
-		if packageName == "" && pkg != "runtime" { // pickup first package
-			packageName = pkg
-		}
-
 		if frameFilter(pkg, fn, frame.File, frame.Line) {
-			stackFrames = stackFrames[:0]
+			frames = frames[:0]
 			continue
 		}
 
-		stackFrames = append(stackFrames, Frame{
+		frames = append(frames, Frame{
 			File: frame.File,
 			Line: frame.Line,
 			Func: fn,
 		})
 	}
 
-	return
+	return frames
 }
 
 func splitPackageFuncName(funcName string) (string, string) {
