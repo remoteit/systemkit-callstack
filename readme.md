@@ -1,4 +1,4 @@
-# ![](https://fonts.gstatic.com/s/i/materialicons/bookmarks/v4/24px.svg) Simple Call Stack for Go
+# ![](https://fonts.gstatic.com/s/i/materialiconsoutlined/flare/v4/24px.svg) Simple Call Stack for Go
 [![](https://img.shields.io/github/v/release/codemodify/systemkit-callstack?style=flat-square)](https://github.com/codemodify/systemkit-callstack/releases/latest)
 ![](https://img.shields.io/github/languages/code-size/codemodify/systemkit-callstack?style=flat-square)
 ![](https://img.shields.io/github/last-commit/codemodify/systemkit-callstack?style=flat-square)
