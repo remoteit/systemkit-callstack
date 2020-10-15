@@ -1,3 +1,3 @@
-module github.com/codemodify/systemkit-callstack
+module github.com/remoteit/systemkit-callstack
 
 go 1.13

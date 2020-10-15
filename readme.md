@@ -20,7 +20,7 @@
 ### Usage
 ```go
 import (
-	"github.com/codemodify/systemkit-callstack"
+	"github.com/remoteit/systemkit-callstack"
 )
 
 func main() {
